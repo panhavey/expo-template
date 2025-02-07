@@ -1,4 +1,4 @@
-import { borderRadius, colors, fontSize, fontWeight, lineHeight, margins, spacing } from "@/components/constants";
+import { borderRadius, colors, fontSize, fontWeight, lineHeight, margins, spacing } from "@/constants";
 
 const baseTheme = {
   margins,

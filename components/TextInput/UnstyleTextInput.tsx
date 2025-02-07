@@ -2,7 +2,7 @@ import { TextInput as RNTextInput, TextInputProps } from "react-native";
 import React, { forwardRef } from "react";
 import { CustomTextInputProps, TextInputRef } from "./types";
 import { useField } from "../Field/FieldContext";
-import { colors } from "../constants";
+import { colors } from "../../constants";
 
 type UnstyledInputProps = Omit<CustomTextInputProps, "variant">;
 

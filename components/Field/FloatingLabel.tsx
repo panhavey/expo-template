@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleProp, StyleSheet, TextStyle, View } from "react-native";
 import Animated, { Easing, useAnimatedStyle, withTiming } from "react-native-reanimated";
-import { colors, spacing } from "../constants";
+import { colors, spacing } from "../../constants";
 
 interface FloatingLabelProps {
   children: React.ReactNode;

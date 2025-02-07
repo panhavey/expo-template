@@ -1,7 +1,7 @@
 import React from "react";
 
 import { Text } from "../Text";
-import { colors } from "../constants";
+import { colors } from "../../constants";
 
 interface FieldErrorProps {
   error?: string;

@@ -3,7 +3,7 @@ import React from "react";
 import { Pressable, StyleSheet } from "react-native";
 import Animated, { interpolate, interpolateColor, useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
 
-import { colors, spacing } from "../constants";
+import { colors, spacing } from "../../constants";
 
 interface SwitchProps {
   value?: boolean;

@@ -2,8 +2,8 @@ import React from "react";
 import { StyleSheet, View } from "react-native";
 import { useField } from "./FieldContext";
 import { FieldContentProps } from "./type";
-import { colors } from "@/components/constants/color";
-import { borderRadius, spacing } from "../constants";
+import { colors } from "@/constants/color";
+import { borderRadius, spacing } from "../../constants";
 
 export const FieldContent: React.FC<FieldContentProps> = ({ children, left, right }) => {
   const { isFocused } = useField();

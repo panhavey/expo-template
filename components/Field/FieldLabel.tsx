@@ -3,7 +3,7 @@ import React from "react";
 import { useField } from "./FieldContext";
 import { FloatingLabel } from "./FloatingLabel";
 import { Text } from "../Text";
-import { colors, fontSize } from "../constants";
+import { colors, fontSize } from "../../constants";
 import { StyleSheet } from "react-native";
 
 interface FieldLabelProps {
