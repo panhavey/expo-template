@@ -1,6 +1,7 @@
-import { Text, StyleSheet, ActivityIndicator, View } from "react-native";
+import { Text, StyleSheet, ActivityIndicator, View, StyleProp, ViewStyle } from "react-native";
 import { Pressable, type PressableProps } from "react-native-gesture-handler";
 import { ReactNode } from "react";
+import { colors } from "@/constants";
 
 type ButtonType = "primary" | "secondary" | "outline" | "ghost";
 
@@ -22,6 +23,7 @@ export const Button = ({
   loading,
   icon,
   iconPosition = "left",
+  style,
   ...rest
 }: ButtonProps) => {
   const isDisabled = disabled || loading;
@@ -31,12 +33,16 @@ export const Button = ({
       onPress={onPress}
       onLongPress={onLongPress}
       disabled={isDisabled}
-      style={({ pressed }) => [
-        styles.button,
-        styles[`${type}Button`],
-        pressed && styles[`${type}ButtonPressed`],
-        isDisabled && styles.buttonDisabled,
-      ]}
+      style={({ pressed }) => {
+        const baseStyles = [
+          styles.button,
+          styles[`${type}Button`],
+          pressed && styles[`${type}ButtonPressed`],
+          isDisabled && styles.buttonDisabled,
+          typeof style === "function" ? style({ pressed }) : style,
+        ];
+        return baseStyles;
+      }}
       hitSlop={5}
       {...rest}
     >
@@ -64,15 +70,22 @@ const styles = StyleSheet.create({
     backgroundColor: "#007AFF",
   },
   secondaryButton: {
-    backgroundColor: "#5856D6",
+    backgroundColor: colors.gray_500,
   },
   outlineButton: {
     backgroundColor: "transparent",
-    borderWidth: 1,
+    borderWidth: 2,
     borderColor: "#007AFF",
   },
   ghostButton: {
     backgroundColor: "transparent",
+  },
+  ghostButtonPressed: {
+    backgroundColor: "rgba(0, 122, 255, 0.08)",
+    transform: [{ scale: 0.98 }],
+  },
+  ghostText: {
+    color: "#007AFF",
   },
   primaryButtonPressed: {
     backgroundColor: "#007AFF",
@@ -88,10 +101,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0, 122, 255, 0.1)",
     transform: [{ scale: 0.98 }],
   },
-  ghostButtonPressed: {
-    backgroundColor: "rgba(0, 0, 0, 0.05)",
-    transform: [{ scale: 0.98 }],
-  },
+
   buttonDisabled: {
     opacity: 0.5,
   },
@@ -106,9 +116,6 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
   },
   outlineText: {
-    color: "#007AFF",
-  },
-  ghostText: {
     color: "#007AFF",
   },
   textDisabled: {
