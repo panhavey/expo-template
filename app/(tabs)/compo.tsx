@@ -1,4 +1,6 @@
 import { Button } from "@/components/Button";
+import { Picker } from "@/components/Picker";
+
 import { Switch } from "@/components/Switch";
 import TextInput from "@/components/TextInput";
 import { toast } from "@/components/Toast";
@@ -20,7 +22,11 @@ export default function CompoScreen() {
       <ScrollView contentContainerStyle={{ padding: 16, gap: 16 }}>
         <Switch />
         <TextInput label="Username" placeholder="Enter your username" />
+        <Picker label="Options" options={options} placeholder="Choose an option" searchable />
+
         <TextInput label="Password" placeholder="Enter your password" variant="outline" />
+        <Picker label="Select Option" options={options} variant="outline" placeholder="Choose an option" />
+
         <>
           <Button onPress={() => toast.success("Success", { duration: 4000, mode: "stack" })}>Primary-Slide</Button>
           <Button type="outline" onPress={() => toast.error("Fail", { animation: "bounce", mode: "stack" })}>
@@ -34,3 +40,9 @@ export default function CompoScreen() {
     </SafeAreaView>
   );
 }
+
+const options = [
+  { label: "Option 1", value: "1" },
+  { label: "Option 2", value: "2" },
+  { label: "Option 3", value: "3" },
+];
