@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState, useId } from "react";
 import { View, StyleSheet } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ToastOptions, ToastProps } from "./types";
@@ -6,41 +6,79 @@ import { toastManager } from "./ToastManager";
 import { ToastItem } from "./components/ToastItem";
 
 export const ToastContainer: React.FC = () => {
-  const [toastQueue, setToastQueue] = useState<ToastProps[]>([]);
-  const [activeToasts, setActiveToasts] = useState<ToastProps[]>([]);
-  const insets = useSafeAreaInsets();
+  const idPrefix = useId();
+  const [toasts, setToasts] = useState<ToastProps[]>([]);
+  const dismissQueue = React.useRef<Set<string>>(new Set());
+  const dismissTimeouts = React.useRef<Map<string, NodeJS.Timeout>>(new Map());
+  const counter = React.useRef(0);
 
-  const showToast = useCallback((message: string, options?: ToastOptions) => {
-    const toastId = Math.random().toString(36).substring(2, 9);
-    const newToast = { id: toastId, message, ...options };
-    setToastQueue(currentQueue => [...currentQueue, newToast]);
-    return toastId;
-  }, []);
+  const showToast = useCallback(
+    (message: string, options?: ToastOptions) => {
+      counter.current += 1;
+      const timestamp = Date.now();
+      const toastId = `${idPrefix}-${timestamp}-${counter.current}`;
+      const newToast = { id: toastId, message, ...options };
+
+      setToasts((currentToasts) => {
+        const index = currentToasts.length;
+        if (options?.duration && options.duration > 0) {
+          const timeout = setTimeout(() => {
+            removeToast(toastId);
+          }, options.duration + index * 100);
+          dismissTimeouts.current.set(toastId, timeout);
+        }
+        return [...currentToasts, newToast];
+      });
+
+      return toastId;
+    },
+    [idPrefix]
+  );
 
   const removeToast = useCallback((toastId: string) => {
-    setActiveToasts(current => current.filter(toast => toast.id !== toastId));
+    if (dismissTimeouts.current.has(toastId)) {
+      clearTimeout(dismissTimeouts.current.get(toastId));
+      dismissTimeouts.current.delete(toastId);
+    }
+
+    dismissQueue.current.add(toastId);
+    setToasts((current) => {
+      const index = current.findIndex((toast) => toast.id === toastId);
+      const previousToastsAreDismissed = current.slice(0, index).every((toast) => dismissQueue.current.has(toast.id));
+
+      if (previousToastsAreDismissed) {
+        const newToasts = current.filter((_, i) => i > index);
+        dismissQueue.current.clear();
+        return newToasts;
+      }
+      return current;
+    });
+  }, []);
+
+  // Cleanup timeouts on unmount
+  useEffect(() => {
+    return () => {
+      dismissTimeouts.current.forEach((timeout) => clearTimeout(timeout));
+      dismissTimeouts.current.clear();
+    };
+  }, []);
+
+  const insets = useSafeAreaInsets();
+
+  const updateToast = useCallback((toastId: string, message: string, options?: ToastOptions) => {
+    setToasts((current) => current.map((toast) => (toast.id === toastId ? { ...toast, message, ...options } : toast)));
   }, []);
 
   const dismissAll = useCallback(() => {
-    setToastQueue([]);
-    setActiveToasts([]);
+    setToasts([]);
   }, []);
 
-  // Handle toast queue
   useEffect(() => {
-    if (toastQueue.length > 0 && activeToasts.length === 0) {
-      const [nextToast, ...remainingToasts] = toastQueue;
-      setActiveToasts([nextToast]);
-      setToastQueue(remainingToasts);
-    }
-  }, [toastQueue, activeToasts]);
-
-  useEffect(() => {
-    toastManager.setHandlers(showToast, dismissAll);
-  }, [showToast, dismissAll]);
+    toastManager.setHandlers(showToast, dismissAll, updateToast);
+  }, [showToast, dismissAll, updateToast]);
 
   return (
-    <View 
+    <View
       style={[
         styles.container,
         {
@@ -48,18 +86,23 @@ export const ToastContainer: React.FC = () => {
           right: insets.left,
           top: insets.top,
           bottom: insets.bottom,
-        }
-      ]} 
+        },
+      ]}
       pointerEvents="box-none"
     >
-      {activeToasts.map((toast, index) => (
-        <ToastItem 
-          key={toast.id} 
-          {...toast} 
-          style={[{ zIndex: 1000 + index }]} 
-          onDismiss={() => removeToast(toast.id)} 
-        />
-      ))}
+      {toasts.map((toast, index) => {
+        const reverseIndex = toasts.length - 1 - index;
+        const offset = toast.mode === "stack" ? reverseIndex * 65 : 0;
+
+        return (
+          <ToastItem
+            key={toast.id}
+            {...toast}
+            style={[{ zIndex: 1000 + reverseIndex }, toast.position === "top" ? { top: offset } : { bottom: offset }]}
+            onDismiss={() => removeToast(toast.id)}
+          />
+        );
+      })}
     </View>
   );
 };

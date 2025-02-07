@@ -1,11 +1,11 @@
 import React from "react";
 import { Pressable, View, StyleSheet } from "react-native";
 import { GestureDetector } from "react-native-gesture-handler";
-import Animated, { useAnimatedStyle, withSpring } from "react-native-reanimated";
+import Animated, { useAnimatedStyle } from "react-native-reanimated";
 import { Text } from "../../Text";
 import { useToastGesture } from "../hooks/useToastGesture";
 import { ProgressBar } from "./ProgressBar";
-import { ToastItemProps } from "../types";
+import { ToastProps, ToastItemProps } from "../types";
 import { getToastIcon } from "../utils/icons";
 import { colors, spacing } from "@/constants";
 
@@ -86,6 +86,7 @@ const styles = StyleSheet.create({
     padding: spacing.md,
     borderRadius: spacing.sm,
     overflow: "hidden",
+    marginBottom: spacing.xs, // Add spacing between stacked toasts
   },
   successContainer: {
     backgroundColor: colors.success,

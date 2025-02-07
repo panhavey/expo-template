@@ -4,6 +4,8 @@ export type ToastType = "success" | "error" | "info" | "warning";
 
 export type ToastAnimation = "bounce" | "slide";
 
+export type ToastMode = "stack" | "overlap";
+
 export interface ToastOptions {
   type?: ToastType;
   duration?: number;
@@ -21,6 +23,7 @@ export interface ToastOptions {
     stiffness?: number;
   };
   showProgress?: boolean;
+  mode?: ToastMode;
 }
 
 export interface ToastProps extends ToastOptions {
@@ -30,6 +33,7 @@ export interface ToastProps extends ToastOptions {
 
 export interface ToastItemProps extends Omit<ToastProps, "id"> {
   onDismiss: () => void;
+  style?: StyleProp<ViewStyle>;
 }
 
 export interface ToastItem extends ToastProps {
