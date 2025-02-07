@@ -1,5 +1,5 @@
 import { Text as RNText, StyleSheet, type TextProps as RNTextProps } from "react-native";
-import { colors, fontSize } from "./constants";
+import { colors, fontSize } from "../constants";
 
 type TextType = "title" | "subtitle" | "caption" | "button" | "default";
 type TextLang = "en" | "kh";
