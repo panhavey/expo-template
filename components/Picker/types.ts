@@ -17,4 +17,5 @@ export interface PickerProps {
   left?: React.ReactNode;
   right?: React.ReactNode;
   searchable?: boolean;
+  mode?: "normal" | "modal" | "fullModal";
 }

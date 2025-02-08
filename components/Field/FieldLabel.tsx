@@ -32,7 +32,7 @@ export const FieldLabel: React.FC<FieldLabelProps> = ({ label }) => {
 
 const styles = StyleSheet.create({
   label: {
-    fontSize: fontSize.xs,
+    fontSize: fontSize.md,
     marginBottom: 4,
     includeFontPadding: false,
     textAlignVertical: "center",

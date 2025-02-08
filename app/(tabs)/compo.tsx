@@ -5,38 +5,61 @@ import { Switch } from "@/components/Switch";
 import TextInput from "@/components/TextInput";
 import { toast } from "@/components/Toast";
 import { SafeAreaView, ScrollView } from "react-native";
+import { SectionList, View } from "react-native";
 
 export default function CompoScreen() {
-  const handleToast = () => {
-    const warningToast = toast.warning("Uploading", { duration: 0 });
-    setTimeout(() => {
-      toast.update(warningToast, "Suceess", { type: "success" });
-    }, 1000);
-    setTimeout(() => {
-      toast.dismiss(warningToast);
-    }, 4000);
-  };
+  const sections = [
+    {
+      title: "section1",
+      data: [
+        {
+          type: "controls",
+          content: (
+            <>
+              <Switch />
+              <TextInput label="Username" placeholder="Enter your username" />
+              <Picker label="Options" options={options} placeholder="Choose an option" searchable />
+            </>
+          ),
+        },
+        {
+          type: "forms",
+          content: (
+            <>
+              <TextInput label="Password" placeholder="Enter your password" variant="outline" />
+              <Picker label="Select Option" options={options} variant="outline" placeholder="Choose an option" mode="normal" searchable />
+              <Picker label="Select Option" options={options} variant="outline" placeholder="Choose an option" mode="modal" searchable />
+              <Picker label="Select Option" options={options} variant="outline" placeholder="Choose an option" mode="fullModal" searchable />
+            </>
+          ),
+        },
+        {
+          type: "buttons",
+          content: (
+            <>
+              <Button onPress={() => toast.success("Success", { duration: 4000, mode: "stack" })}>Primary-Slide</Button>
+              <Button type="outline" onPress={() => toast.error("Fail", { animation: "bounce", mode: "stack" })}>
+                Outline-Bounce
+              </Button>
+              <Button type="ghost" onPress={() => toast.info("Info message", { mode: "stack" })}>
+                Ghost-Update
+              </Button>
+            </>
+          ),
+        },
+      ],
+    },
+  ];
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
-      <ScrollView contentContainerStyle={{ padding: 16, gap: 16 }}>
-        <Switch />
-        <TextInput label="Username" placeholder="Enter your username" />
-        <Picker label="Options" options={options} placeholder="Choose an option" searchable />
-
-        <TextInput label="Password" placeholder="Enter your password" variant="outline" />
-        <Picker label="Select Option" options={options} variant="outline" placeholder="Choose an option" />
-
-        <>
-          <Button onPress={() => toast.success("Success", { duration: 4000, mode: "stack" })}>Primary-Slide</Button>
-          <Button type="outline" onPress={() => toast.error("Fail", { animation: "bounce", mode: "stack" })}>
-            Outline-Bounce
-          </Button>
-          <Button type="ghost" onPress={handleToast}>
-            Ghost-Update
-          </Button>
-        </>
-      </ScrollView>
+      <SectionList
+        sections={sections}
+        keyExtractor={(item, index) => item.type + index}
+        renderItem={({ item }) => <View style={{ padding: 16, gap: 16 }}>{item.content}</View>}
+        renderSectionHeader={() => null}
+        stickySectionHeadersEnabled={false}
+      />
     </SafeAreaView>
   );
 }

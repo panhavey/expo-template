@@ -33,12 +33,12 @@ export const UnstyleTextInput = forwardRef<TextInputRef, UnstyledInputProps>(({ 
       ref={ref}
       editable={!disabled}
       placeholder={showPlaceholder ? placeholderText : undefined}
-      placeholderTextColor={colors.black_400}
+      placeholderTextColor={colors.gray_500}
       onFocus={handleFocus}
       onBlur={handleBlur}
       value={value}
       onChangeText={setValue}
-      style={{ height: "100%" }}
+      style={{ height: "100%", fontSize: 16 }}
       {...props}
     />
   );
