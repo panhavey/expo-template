@@ -1,12 +1,13 @@
 import React, { useRef, useState } from "react";
-import { View, Text, StyleSheet, Modal, FlatList, Pressable, TextInput, Keyboard } from "react-native";
+import { View, Text, StyleSheet, Modal, Pressable, TextInput } from "react-native";
 import { Field } from "../Field";
 import { colors, fontSize } from "@/constants";
-import { ChevronDown, ChevronUp, Search } from "lucide-react-native";
+import { ChevronDown, ChevronUp, X } from "lucide-react-native";
 import { PickerOption, PickerProps } from "./types";
 import { useLayout } from "@/hooks/useLayout";
-import { X } from "lucide-react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { PickerOptions } from "./PickerOptions";
+import { SearchInput } from "./SearchInput";
 
 export const Picker = ({
   label,
@@ -79,33 +80,10 @@ export const Picker = ({
             </Pressable>
           </View>
         )}
-        {searchable && (
-          <View style={styles.searchContainer}>
-            <Search color={colors.gray_400} size={20} />
-            <TextInput
-              ref={searchRef}
-              style={styles.searchInput}
-              placeholder="Search..."
-              value={searchQuery}
-              onChangeText={setSearchQuery}
-              // autoFocus={mode !== "normal"}
-            />
-          </View>
-        )}
-        <FlatList
-          data={filteredOptions}
-          keyExtractor={(item) => item.value}
-          ListEmptyComponent={
-            <View style={styles.emptyContainer}>
-              <Text style={styles.emptyText}>No options found</Text>
-            </View>
-          }
-          renderItem={({ item }) => (
-            <Pressable style={[styles.option, item.value === value && styles.selectedOption]} onPress={() => handleSelect(item)}>
-              <Text style={[styles.optionText, item.value === value && styles.selectedOptionText]}>{item.label}</Text>
-            </Pressable>
-          )}
-        />
+
+        {searchable && <SearchInput value={searchQuery} onChangeText={setSearchQuery} inputRef={searchRef} />}
+
+        <PickerOptions options={filteredOptions} value={value} onSelect={handleSelect} />
       </View>
     );
 
