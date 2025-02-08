@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 import { View, Text, StyleSheet, Modal, Pressable, TextInput } from "react-native";
 import { Field } from "../Field";
-import { colors, fontSize } from "@/constants";
+import { borderRadius, colors, fontSize } from "@/constants";
 import { ChevronDown, ChevronUp, X } from "lucide-react-native";
 import { PickerOption, PickerProps } from "./types";
 import { useLayout } from "@/hooks/useLayout";
@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
   },
   optionsContainer: {
     backgroundColor: colors.white,
-    borderRadius: 8,
+    borderRadius: borderRadius.md,
     overflow: "hidden",
     maxHeight: "80%",
     borderWidth: 1,

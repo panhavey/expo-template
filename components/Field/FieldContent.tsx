@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.sm,
     height: 45,
     backgroundColor: colors.white,
-    borderRadius: borderRadius.sm,
+    borderRadius: borderRadius.md,
   },
   inputContainer: {
     position: "relative",
