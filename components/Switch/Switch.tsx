@@ -1,5 +1,5 @@
 // More information check: https://docs.swmansion.com/react-native-reanimated/examples/switch
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Pressable, StyleSheet } from "react-native";
 import Animated, { interpolate, interpolateColor, useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
 
@@ -11,23 +11,45 @@ interface SwitchProps {
   style?: any;
   duration?: number;
   trackColors?: { on: string; off: string };
+  // Add new props for thumb customization
+  thumbStyle?: any;
+  thumbOnIcon?: React.ReactNode;
+  thumbOffIcon?: React.ReactNode;
 }
 
-export const Switch: React.FC<SwitchProps> = ({ value: externalValue, onChange, style, duration = 300, trackColors }) => {
+export const Switch: React.FC<SwitchProps> = ({
+  value: externalValue,
+  onChange,
+  style,
+  duration = 300,
+  trackColors,
+  thumbStyle,
+  thumbOnIcon,
+  thumbOffIcon,
+}) => {
+  const [isOn, setIsOn] = useState(externalValue ?? false);
   const height = useSharedValue(0);
   const width = useSharedValue(0);
   const internalValue = useSharedValue(externalValue ?? false);
+
+  useEffect(() => {
+    if (externalValue !== undefined) {
+      setIsOn(externalValue);
+      internalValue.value = externalValue;
+    }
+  }, [externalValue]);
+
+  const handlePress = () => {
+    const newValue = !internalValue.value;
+    internalValue.value = newValue;
+    setIsOn(newValue);
+    onChange?.(newValue);
+  };
 
   const defaultTrackColors = {
     on: colors.primary,
     off: colors.black_300,
     ...trackColors,
-  };
-
-  const handlePress = () => {
-    const newValue = !internalValue.value;
-    internalValue.value = newValue;
-    onChange?.(newValue);
   };
 
   const trackAnimatedStyle = useAnimatedStyle(() => {
@@ -59,7 +81,7 @@ export const Switch: React.FC<SwitchProps> = ({ value: externalValue, onChange, 
         }}
         style={[styles.track, style, trackAnimatedStyle]}
       >
-        <Animated.View style={[styles.thumb, thumbAnimatedStyle]} />
+        <Animated.View style={[styles.thumb, thumbStyle, thumbAnimatedStyle]}>{isOn ? thumbOnIcon : thumbOffIcon}</Animated.View>
       </Animated.View>
     </Pressable>
   );
@@ -76,5 +98,7 @@ const styles = StyleSheet.create({
     height: "100%",
     aspectRatio: 1,
     backgroundColor: colors.white,
+    alignItems: "center",
+    justifyContent: "center",
   },
 });

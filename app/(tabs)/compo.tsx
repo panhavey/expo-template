@@ -4,6 +4,7 @@ import { Picker } from "@/components/Picker";
 import { Switch } from "@/components/Switch";
 import TextInput from "@/components/TextInput";
 import { toast } from "@/components/Toast";
+import { Check, X } from "lucide-react-native";
 import { SafeAreaView, ScrollView } from "react-native";
 import { SectionList, View } from "react-native";
 
@@ -17,6 +18,7 @@ export default function CompoScreen() {
           content: (
             <>
               <Switch />
+              <Switch thumbOnIcon={<Check size={12} color="gray" />} thumbOffIcon={<X size={12} color="gray" />} />
               <TextInput label="Username" placeholder="Enter your username" />
               <Picker label="Options" options={options} placeholder="Choose an option" searchable />
             </>
