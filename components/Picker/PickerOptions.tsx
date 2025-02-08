@@ -1,13 +1,7 @@
-import React from 'react';
-import { View, Text, StyleSheet, FlatList, Pressable } from 'react-native';
-import { colors, fontSize } from '@/constants';
-import { PickerOption } from './types';
-
-interface PickerOptionsProps {
-  options: PickerOption[];
-  value?: string;
-  onSelect: (option: PickerOption) => void;
-}
+import React from "react";
+import { View, Text, StyleSheet, FlatList, Pressable } from "react-native";
+import { colors } from "@/constants";
+import { PickerOptionsProps } from "./types";
 
 export const PickerOptions = ({ options, value, onSelect }: PickerOptionsProps) => {
   return (
@@ -20,13 +14,8 @@ export const PickerOptions = ({ options, value, onSelect }: PickerOptionsProps) 
         </View>
       }
       renderItem={({ item }) => (
-        <Pressable 
-          style={[styles.option, item.value === value && styles.selectedOption]} 
-          onPress={() => onSelect(item)}
-        >
-          <Text style={[styles.optionText, item.value === value && styles.selectedOptionText]}>
-            {item.label}
-          </Text>
+        <Pressable style={[styles.option, item.value === value && styles.selectedOption]} onPress={() => onSelect(item)}>
+          <Text style={[styles.optionText, item.value === value && styles.selectedOptionText]}>{item.label}</Text>
         </Pressable>
       )}
     />

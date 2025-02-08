@@ -29,7 +29,15 @@ export default function CompoScreen() {
           content: (
             <>
               <TextInput label="Password" placeholder="Enter your password" variant="outline" />
-              <Picker label="Select Option" options={options} variant="outline" placeholder="Choose an option" mode="normal" searchable />
+              <Picker
+                label="Select Option"
+                options={options2}
+                fieldNames={{ label: "name", value: "code" }}
+                variant="outline"
+                placeholder="Choose an option"
+                mode="normal"
+                searchable
+              />
               <Picker label="Select Option" options={options} variant="outline" placeholder="Choose an option" mode="modal" searchable />
               <Picker label="Select Option" options={options} variant="outline" placeholder="Choose an option" mode="fullModal" searchable />
             </>
@@ -70,4 +78,10 @@ const options = [
   { label: "Option 1", value: "1" },
   { label: "Option 2", value: "2" },
   { label: "Option 3", value: "3" },
+];
+
+const options2 = [
+  { name: "Option 1", code: "1" },
+  { name: "Option 2", code: "2" },
+  { name: "Option 3", code: "3" },
 ];

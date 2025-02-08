@@ -22,6 +22,7 @@ export const Picker = ({
   right,
   searchable,
   mode = "modal",
+  fieldNames = { label: "label", value: "value" },
 }: PickerProps) => {
   const [internalValue, setInternalValue] = useState<string | undefined>();
   const [isOpen, setIsOpen] = useState(false);
@@ -33,25 +34,31 @@ export const Picker = ({
 
   const isControlled = externalValue !== undefined;
   const value = isControlled ? externalValue : internalValue;
-  const selectedOption = options.find((option) => option.value === value);
+  const mappedOptions = options.map(option => ({
+    label: option[fieldNames.label],
+    value: option[fieldNames.value],
+    original: option
+  }));
+
+  const selectedOption = mappedOptions.find((option) => option.value === value);
 
   const handleSelect = (option: PickerOption) => {
     if (!isControlled) {
       setInternalValue(option.value);
     }
-    externalOnChange?.(option.value);
+    externalOnChange?.(option.value, option.original);
     handleClose();
   };
 
-  const handleClose = () => {
-    console.log("press");
+  const filteredOptions = mappedOptions.filter((option) => 
+    option.label.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
+  const handleClose = () => {
     searchRef.current?.blur();
     setSearchQuery("");
     setIsOpen(false);
   };
-
-  const filteredOptions = options.filter((option) => option.label.toLowerCase().includes(searchQuery.toLowerCase()));
 
   const renderOptions = () => {
     const OptionsContent = (
