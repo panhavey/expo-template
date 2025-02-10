@@ -9,7 +9,8 @@ import "react-native-reanimated";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { ToastContainer } from "@/components/Toast";
+import { ToastProvider } from "@/components/Toast/v2";
+import { PortalProvider } from "@gorhom/portal";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -33,14 +34,16 @@ export default function RootLayout() {
   return (
     <SafeAreaProvider>
       <GestureHandlerRootView>
-        <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-          <Stack>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="+not-found" />
-          </Stack>
-          <StatusBar style="auto" />
-          <ToastContainer />
-        </ThemeProvider>
+        <PortalProvider>
+          <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+            <Stack>
+              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              <Stack.Screen name="+not-found" />
+            </Stack>
+            <StatusBar style="auto" />
+            <ToastProvider />
+          </ThemeProvider>
+        </PortalProvider>
       </GestureHandlerRootView>
     </SafeAreaProvider>
   );

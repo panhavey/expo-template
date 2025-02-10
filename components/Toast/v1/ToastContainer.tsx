@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect, useState, useId } from "react";
 import { View, StyleSheet } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { ToastOptions, ToastProps } from "./types";
+import { ToastOptions, ToastProps } from "../types";
 import { toastManager } from "./ToastManager";
-import { ToastItem } from "./components/ToastItem";
+import { ToastItem } from "../components/ToastItem";
 
 export const ToastContainer: React.FC = () => {
   const idPrefix = useId();

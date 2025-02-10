@@ -1,5 +1,4 @@
-export * from "./ToastContainer";
-export * from "./types";
+export type * from "./types";
 
 export { ToastItem as Toast } from "./components/ToastItem";
-export { toast } from "./ToastManager";
+export * from "./v2";
