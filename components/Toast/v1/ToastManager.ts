@@ -1,4 +1,4 @@
-import { ToastOptions } from "./types";
+import { ToastOptions } from "../types";
 
 class ToastManager {
   private static instance: ToastManager;
@@ -26,7 +26,7 @@ class ToastManager {
   }
 
   show(message: string, options?: ToastOptions): string {
-    return this.showCallback?.(message, options) ?? '';
+    return this.showCallback?.(message, options) ?? "";
   }
 
   update(toastId: string, message: string, options?: ToastOptions) {
@@ -46,16 +46,11 @@ export const toastManager = ToastManager.getInstance();
 
 export const toast = {
   show: (message: string, options?: ToastOptions) => toastManager.show(message, options),
-  update: (toastId: string, message: string, options?: ToastOptions) => 
-    toastManager.update(toastId, message, options),
+  update: (toastId: string, message: string, options?: ToastOptions) => toastManager.update(toastId, message, options),
   dismiss: (toastId: string) => toastManager.dismiss(toastId),
   dismissAll: () => toastManager.dismissAll(),
-  success: (message: string, options?: Omit<ToastOptions, "type">) => 
-    toastManager.show(message, { ...options, type: "success" }),
-  error: (message: string, options?: Omit<ToastOptions, "type">) => 
-    toastManager.show(message, { ...options, type: "error" }),
-  info: (message: string, options?: Omit<ToastOptions, "type">) => 
-    toastManager.show(message, { ...options, type: "info" }),
-  warning: (message: string, options?: Omit<ToastOptions, "type">) => 
-    toastManager.show(message, { ...options, type: "warning" }),
+  success: (message: string, options?: Omit<ToastOptions, "type">) => toastManager.show(message, { ...options, type: "success" }),
+  error: (message: string, options?: Omit<ToastOptions, "type">) => toastManager.show(message, { ...options, type: "error" }),
+  info: (message: string, options?: Omit<ToastOptions, "type">) => toastManager.show(message, { ...options, type: "info" }),
+  warning: (message: string, options?: Omit<ToastOptions, "type">) => toastManager.show(message, { ...options, type: "warning" }),
 };
