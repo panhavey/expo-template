@@ -3,7 +3,7 @@ import { Picker } from "@/components/Picker";
 
 import { Switch } from "@/components/Switch";
 import TextInput from "@/components/TextInput";
-import { toast } from "@/components/Toast/V2";
+import { toast } from "@/components/Toast/v2";
 import { Check, X } from "lucide-react-native";
 import { SafeAreaView, ScrollView } from "react-native";
 import { SectionList, View } from "react-native";

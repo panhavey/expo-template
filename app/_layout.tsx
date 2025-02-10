@@ -9,7 +9,7 @@ import "react-native-reanimated";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { ToastProvider } from "@/components/Toast/V2";
+import { ToastProvider } from "@/components/Toast/v2";
 import { PortalProvider } from "@gorhom/portal";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
