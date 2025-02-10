@@ -1,4 +1,6 @@
 import { Button } from "@/components/Button";
+import { dialogService } from "@/components/Dialog/DialogService";
+
 import { Picker } from "@/components/Picker";
 
 import { Switch } from "@/components/Switch";
@@ -9,6 +11,8 @@ import { SafeAreaView, ScrollView } from "react-native";
 import { SectionList, View } from "react-native";
 
 export default function CompoScreen() {
+  // const dialog = useDialog();
+
   const sections = [
     {
       title: "section1",
@@ -54,6 +58,8 @@ export default function CompoScreen() {
               <Button type="ghost" onPress={() => toast.info("Info message", { mode: "stack" })}>
                 Ghost-Update
               </Button>
+
+              <Button onPress={() => dialogService.show({ title: "Show", content: "hello how are you" })}>Dialog</Button>
             </>
           ),
         },
