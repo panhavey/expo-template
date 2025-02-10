@@ -39,3 +39,10 @@ export interface ToastItemProps extends Omit<ToastProps, "id"> {
 export interface ToastItem extends ToastProps {
   id: string;
 }
+
+export interface ToastState {
+  message: string;
+  type: ToastType;
+  options?: ToastOptions;
+  onDismiss?: (index: number) => void;
+}

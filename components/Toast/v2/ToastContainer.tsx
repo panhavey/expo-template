@@ -2,7 +2,7 @@ import { Portal } from "@gorhom/portal";
 import React from "react";
 import { View, StyleSheet } from "react-native";
 import { ToastItem } from "../components/ToastItem";
-import { ToastState } from "./types";
+import { ToastState } from "../types";
 
 export const ToastContainer: React.FC<{ toasts: ToastState[] }> = ({ toasts }) => {
   if (toasts.length === 0) return null;

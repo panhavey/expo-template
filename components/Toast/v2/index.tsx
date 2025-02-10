@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { ToastOptions, ToastType } from "../types";
-import { ToastState } from "./types";
+import { ToastOptions, ToastState, ToastType } from "../types";
 import { ToastContainer } from "./ToastContainer";
 
 type ToastInstanceType = ((message: string, type: ToastType, options?: ToastOptions) => void) | null;
@@ -67,5 +66,3 @@ export const ToastProvider: React.FC<{ children?: React.ReactNode }> = ({ childr
     </>
   );
 };
-
-export type { ToastState } from "./types";
