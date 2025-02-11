@@ -6,10 +6,13 @@ import { colors } from "@/constants/color";
 import { borderRadius, spacing } from "../../constants";
 
 export const FieldContent: React.FC<FieldContentProps> = ({ children, left, right }) => {
-  const { isFocused } = useField();
+  const { isFocused, disabled } = useField();
 
   return (
-    <View style={[styles.contentContainer, isFocused ? styles.borderFocus : styles.borderBlur]}>
+    <View
+      style={[styles.contentContainer, isFocused ? styles.borderFocus : styles.borderBlur]}
+      accessibilityState={{ selected: isFocused, disabled }}
+    >
       {left && <View style={styles.addon}>{left}</View>}
       <View style={styles.inputContainer}>{children}</View>
       {right && <View style={styles.addon}>{right}</View>}

@@ -9,5 +9,9 @@ interface FieldErrorProps {
 
 export const FieldError: React.FC<FieldErrorProps> = ({ error }) => {
   if (!error) return null;
-  return <Text style={{ color: colors.error }}>{error}</Text>;
+  return (
+    <Text style={{ color: colors.error }} accessibilityRole="alert" accessibilityLiveRegion="polite">
+      {error}
+    </Text>
+  );
 };
