@@ -228,23 +228,17 @@ export const Picker = ({
         </Field.Root>
       </View>
 
-      {mode === "normal" && isOpen && (
-        <Modal transparent visible={isOpen} onRequestClose={handleClose}>
-          {renderOptions()}
+      {mode === "normal" && (
+        <Modal transparent visible={isOpen} animationType="none" onRequestClose={handleClose}>
+          {isOpen && renderOptions()}
         </Modal>
       )}
 
-      {mode === "modal" && isOpen && (
-        <Modal visible={isOpen} transparent animationType="fade" onRequestClose={handleClose}>
-          <Pressable style={styles.overlay} onPress={handleClose}>
-            <View style={styles.modalWrapper}>{renderOptions()}</View>
+      {mode !== "normal" && (
+        <Modal visible={isOpen} transparent={mode !== "fullModal"} animationType="fade" onRequestClose={handleClose}>
+          <Pressable style={[styles.overlay, mode === "fullModal" && styles.fullOverlay]} onPress={handleClose}>
+            {renderOptions()}
           </Pressable>
-        </Modal>
-      )}
-
-      {mode === "fullModal" && isOpen && (
-        <Modal visible={isOpen} transparent={false} animationType="slide" onRequestClose={handleClose}>
-          {renderOptions()}
         </Modal>
       )}
     </>
@@ -268,6 +262,10 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 0, 0.5)",
     justifyContent: "center",
     padding: 20,
+  },
+  fullOverlay: {
+    padding: 0,
+    backgroundColor: colors.white,
   },
   modalWrapper: {
     width: "100%",
