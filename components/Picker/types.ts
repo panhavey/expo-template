@@ -12,11 +12,15 @@ export interface PickerOption {
   original?: any;
 }
 
+export type PickerMode = "normal" | "modal" | "fullModal";
+
+export type PickerValue = string | string[];
+
 export interface PickerProps {
   label?: string;
-  value?: string;
+  value?: PickerValue;
   options: any[];
-  onChange?: (value: string, originalData?: any) => void;
+  onChange?: (value: PickerValue, originalData?: any) => void;
   placeholder?: string;
   error?: string;
   variant?: FieldVariants;
@@ -24,14 +28,21 @@ export interface PickerProps {
   left?: React.ReactNode;
   right?: React.ReactNode;
   searchable?: boolean;
-  mode?: "normal" | "modal" | "fullModal";
+  mode?: PickerMode;
   fieldNames?: PickerFieldNames;
+  multiple?: boolean;
+  maxSelected?: number;
+  showSelectAll?: boolean;
+  showClear?: boolean;
+  onMaxSelected?: () => void;
 }
 
 export interface PickerOptionsProps {
   options: PickerOption[];
-  value?: string;
+  value?: PickerValue;
   onSelect: (option: PickerOption) => void;
+  multiple?: boolean;
+  maxSelected?: number;
 }
 
 export interface SearchInputProps {

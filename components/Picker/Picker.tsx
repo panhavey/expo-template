@@ -1,13 +1,15 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useCallback } from "react";
 import { View, Text, StyleSheet, Modal, Pressable, TextInput } from "react-native";
 import { Field } from "../Field";
 import { borderRadius, colors, fontSize } from "@/constants";
 import { ChevronDown, ChevronUp, X } from "lucide-react-native";
-import { PickerOption, PickerProps } from "./types";
+import { PickerOption, PickerProps, PickerValue } from "./types";
 import { useLayout } from "@/hooks/useLayout";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { PickerOptions } from "./PickerOptions";
 import { SearchInput } from "./SearchInput";
+import { Tag } from "../Tag";
+import { Trash2 } from "lucide-react-native";
 
 export const Picker = ({
   label,
@@ -23,8 +25,13 @@ export const Picker = ({
   searchable,
   mode = "modal",
   fieldNames = { label: "label", value: "value" },
+  multiple,
+  maxSelected,
+  showSelectAll = false,
+  showClear = false,
+  onMaxSelected,
 }: PickerProps) => {
-  const [internalValue, setInternalValue] = useState<string | undefined>();
+  const [internalValue, setInternalValue] = useState<PickerValue | undefined>();
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const layout = useLayout();
@@ -34,30 +41,89 @@ export const Picker = ({
 
   const isControlled = externalValue !== undefined;
   const value = isControlled ? externalValue : internalValue;
-  const mappedOptions = options.map(option => ({
+  const mappedOptions = options.map((option) => ({
     label: option[fieldNames.label],
     value: option[fieldNames.value],
-    original: option
+    original: option,
   }));
 
-  const selectedOption = mappedOptions.find((option) => option.value === value);
-
-  const handleSelect = (option: PickerOption) => {
-    if (!isControlled) {
-      setInternalValue(option.value);
-    }
-    externalOnChange?.(option.value, option.original);
-    handleClose();
-  };
-
-  const filteredOptions = mappedOptions.filter((option) => 
-    option.label.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const selectedOptions =
+    multiple && Array.isArray(value)
+      ? mappedOptions.filter((option) => value.includes(option.value))
+      : mappedOptions.find((option) => option.value === value);
 
   const handleClose = () => {
     searchRef.current?.blur();
     setSearchQuery("");
     setIsOpen(false);
+  };
+
+  const handleSelect = (option: PickerOption) => {
+    if (multiple) {
+      const currentValue = Array.isArray(value) ? value : [];
+
+      if (maxSelected && currentValue.length >= maxSelected && !currentValue.includes(option.value)) {
+        onMaxSelected?.();
+        return;
+      }
+
+      const newValue = currentValue.includes(option.value) ? currentValue.filter((v) => v !== option.value) : [...currentValue, option.value];
+
+      if (!isControlled) {
+        setInternalValue(newValue);
+      }
+      externalOnChange?.(newValue, option.original);
+    } else {
+      if (!isControlled) {
+        setInternalValue(option.value);
+      }
+      externalOnChange?.(option.value, option.original);
+      handleClose();
+    }
+  };
+
+  const renderValue = () => {
+    if (multiple && Array.isArray(selectedOptions) && selectedOptions.length > 0) {
+      const maxVisibleTags = 2;
+      const remainingCount = selectedOptions.length - maxVisibleTags;
+      const visibleTags = selectedOptions.slice(0, maxVisibleTags);
+
+      return (
+        <View style={styles.tagsContainer}>
+          {visibleTags.map((option) => (
+            <Tag key={option.value} label={option.label} onRemove={() => handleSelect(option)} />
+          ))}
+          {remainingCount > 0 && (
+            <View style={styles.counterTag}>
+              <Text style={styles.counterText}>+{remainingCount}</Text>
+            </View>
+          )}
+        </View>
+      );
+    }
+
+    return (
+      <Text style={[styles.text, !selectedOptions && styles.placeholder]}>
+        {Array.isArray(selectedOptions) ? placeholder : selectedOptions?.label || placeholder}
+      </Text>
+    );
+  };
+
+  const filteredOptions = mappedOptions.filter((option) => option.label.toLowerCase().includes(searchQuery.toLowerCase()));
+
+  const handleSelectAll = () => {
+    const allValues = mappedOptions.map((option) => option.value);
+    if (!isControlled) {
+      setInternalValue(allValues);
+    }
+    externalOnChange?.(allValues);
+  };
+
+  const handleClear = () => {
+    if (!isControlled) {
+      setInternalValue(multiple ? [] : undefined);
+    }
+    externalOnChange?.(multiple ? [] : (undefined as any));
   };
 
   const renderOptions = () => {
@@ -82,15 +148,28 @@ export const Picker = ({
         {mode === "fullModal" && (
           <View style={styles.modalHeader}>
             <Text style={styles.modalTitle}>{label || "Select Option"}</Text>
-            <Pressable onPress={handleClose} hitSlop={8}>
-              <X color={colors.gray_900} size={24} />
-            </Pressable>
+            <View style={styles.headerActions}>
+              {showClear && value && (
+                <Pressable onPress={handleClear} style={styles.headerButton}>
+                  <Trash2 color={colors.gray_900} size={20} />
+                </Pressable>
+              )}
+              <Pressable onPress={handleClose} hitSlop={8}>
+                <X color={colors.gray_900} size={24} />
+              </Pressable>
+            </View>
           </View>
+        )}
+
+        {multiple && showSelectAll && (
+          <Pressable style={styles.selectAllButton} onPress={handleSelectAll}>
+            <Text style={styles.selectAllText}>Select All</Text>
+          </Pressable>
         )}
 
         {searchable && <SearchInput value={searchQuery} onChangeText={setSearchQuery} inputRef={searchRef} />}
 
-        <PickerOptions options={filteredOptions} value={value} onSelect={handleSelect} />
+        <PickerOptions options={filteredOptions} value={value} onSelect={handleSelect} multiple={multiple} />
       </View>
     );
 
@@ -112,9 +191,7 @@ export const Picker = ({
           <Field.Label label={label} />
           <Pressable onPress={() => !disabled && setIsOpen(true)}>
             <Field.Content left={left} right={right || (isOpen ? <ChevronUp color={colors.gray_400} /> : <ChevronDown color={colors.gray_400} />)}>
-              <View style={styles.textContainer}>
-                <Text style={[styles.text, !selectedOption && styles.placeholder]}>{selectedOption?.label || placeholder}</Text>
-              </View>
+              <View style={styles.textContainer}>{renderValue()}</View>
             </Field.Content>
           </Pressable>
           <Field.Error error={error} />
@@ -233,6 +310,24 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: colors.gray_200,
   },
+  headerActions: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+  },
+  headerButton: {
+    padding: 4,
+  },
+  selectAllButton: {
+    padding: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.gray_200,
+  },
+  selectAllText: {
+    fontSize: fontSize.md,
+    color: colors.primary,
+    fontWeight: "500",
+  },
   modalTitle: {
     fontSize: fontSize.md,
     fontWeight: "500",
@@ -247,5 +342,23 @@ const styles = StyleSheet.create({
   bottomSheetIndicator: {
     backgroundColor: colors.gray_400,
     width: 40,
+  },
+  tagsContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 8,
+    paddingVertical: 4,
+    maxWidth: "100%",
+  },
+  counterTag: {
+    backgroundColor: colors.gray_100,
+    borderRadius: borderRadius.sm,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    justifyContent: "center",
+  },
+  counterText: {
+    fontSize: fontSize.sm,
+    color: colors.gray_900,
   },
 });

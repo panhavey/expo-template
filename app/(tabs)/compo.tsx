@@ -38,8 +38,28 @@ export default function CompoScreen() {
                 mode="normal"
                 searchable
               />
-              <Picker label="Select Option" options={options} variant="outline" placeholder="Choose an option" mode="modal" searchable />
-              <Picker label="Select Option" options={options} variant="outline" placeholder="Choose an option" mode="fullModal" searchable />
+              <Picker
+                showClear
+                multiple
+                label="Select Option"
+                options={options}
+                variant="outline"
+                placeholder="Choose an option"
+                mode="modal"
+                searchable
+              />
+              <Picker
+                label="Select Option"
+                options={options}
+                variant="outline"
+                placeholder="Choose an option"
+                mode="fullModal"
+                multiple
+                searchable
+                showClear
+                showSelectAll
+                maxSelected={2}
+              />
             </>
           ),
         },
@@ -78,6 +98,9 @@ const options = [
   { label: "Option 1", value: "1" },
   { label: "Option 2", value: "2" },
   { label: "Option 3", value: "3" },
+  { label: "Option 4", value: "4" },
+  { label: "Option 5", value: "5" },
+  { label: "Option 6", value: "6" },
 ];
 
 const options2 = [
