@@ -10,6 +10,7 @@ import { PickerOptions } from "./PickerOptions";
 import { SearchInput } from "./SearchInput";
 import { Tag } from "../Tag";
 import { Trash2 } from "lucide-react-native";
+import { Dimensions } from "react-native";
 
 export const Picker = ({
   label,
@@ -126,6 +127,9 @@ export const Picker = ({
     externalOnChange?.(multiple ? [] : (undefined as any));
   };
 
+  const windowHeight = Dimensions.get("window").height;
+  const modalMaxHeight = windowHeight * 0.8;
+
   const renderOptions = () => {
     const OptionsContent = (
       <View
@@ -133,10 +137,14 @@ export const Picker = ({
           styles.optionsContainer,
           mode === "normal" && {
             position: "absolute",
-            top: layout.y + layout.height * 2 + 5,
+            top: layout.y + layout.height,
             left: layout.x,
             width: layout.width,
-            zIndex: 1001,
+            maxHeight: Math.min(300, windowHeight - layout.y - layout.height - 20),
+          },
+          mode === "modal" && {
+            maxHeight: modalMaxHeight,
+            width: "100%",
           },
           mode === "fullModal" && {
             ...styles.fullModal,
@@ -174,9 +182,31 @@ export const Picker = ({
     );
 
     if (mode === "normal") {
+      const isBottomOverflow = layout.y + layout.height + 300 > windowHeight;
+
       return (
-        <Pressable style={styles.normalBlocker} onPress={handleClose}>
-          {OptionsContent}
+        <Pressable
+          style={[
+            styles.normalBlocker,
+            isBottomOverflow && {
+              justifyContent: "flex-end",
+              paddingBottom: Math.min(layout.y, 20),
+            },
+          ]}
+          onPress={handleClose}
+        >
+          <View
+            style={[
+              isBottomOverflow && {
+                position: "absolute",
+                bottom: Math.min(layout.y, 20),
+                left: layout.x,
+                width: layout.width,
+              },
+            ]}
+          >
+            {OptionsContent}
+          </View>
         </Pressable>
       );
     }
@@ -204,11 +234,17 @@ export const Picker = ({
         </Modal>
       )}
 
-      {mode !== "normal" && (
-        <Modal visible={isOpen} transparent={mode !== "fullModal"} animationType="fade" onRequestClose={handleClose}>
-          <Pressable style={[styles.overlay, mode === "fullModal" && styles.fullOverlay]} onPress={handleClose}>
-            {renderOptions()}
+      {mode === "modal" && isOpen && (
+        <Modal visible={isOpen} transparent animationType="fade" onRequestClose={handleClose}>
+          <Pressable style={styles.overlay} onPress={handleClose}>
+            <View style={styles.modalWrapper}>{renderOptions()}</View>
           </Pressable>
+        </Modal>
+      )}
+
+      {mode === "fullModal" && isOpen && (
+        <Modal visible={isOpen} transparent={false} animationType="slide" onRequestClose={handleClose}>
+          {renderOptions()}
         </Modal>
       )}
     </>
@@ -233,15 +269,14 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     padding: 20,
   },
-  fullOverlay: {
-    padding: 0,
-    backgroundColor: colors.white,
+  modalWrapper: {
+    width: "100%",
+    alignItems: "center",
   },
   optionsContainer: {
     backgroundColor: colors.white,
     borderRadius: borderRadius.md,
     overflow: "hidden",
-    maxHeight: "80%",
     borderWidth: 1,
     borderColor: colors.gray_200,
     shadowColor: "#000",
