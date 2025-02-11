@@ -1,14 +1,19 @@
 import { Button } from "@/components/Button";
 import { Picker } from "@/components/Picker";
+import { Popover } from "@/components/Popover";
 
 import { Switch } from "@/components/Switch";
+import { Text } from "@/components/Text";
 import TextInput from "@/components/TextInput";
 import { toast } from "@/components/Toast";
 import { Check, X } from "lucide-react-native";
+import { useState } from "react";
 import { SafeAreaView, ScrollView } from "react-native";
 import { SectionList, View } from "react-native";
 
 export default function CompoScreen() {
+  const [popoverOpen, setPopoverOpen] = useState(false);
+
   const sections = [
     {
       title: "section1",
@@ -47,6 +52,9 @@ export default function CompoScreen() {
           type: "buttons",
           content: (
             <>
+              <Popover placement="bottom" content={<Text>"Hello"</Text>} isOpen={popoverOpen} onClose={() => setPopoverOpen(false)}>
+                <Button onPress={() => setPopoverOpen(true)}>Pop</Button>
+              </Popover>
               <Button onPress={() => toast.success("Success", { duration: 4000, mode: "stack" })}>Primary-Slide</Button>
               <Button type="outline" onPress={() => toast.error("Fail", { animation: "bounce", mode: "stack" })}>
                 Outline-Bounce
@@ -69,6 +77,7 @@ export default function CompoScreen() {
         renderItem={({ item }) => <View style={{ padding: 16, gap: 16 }}>{item.content}</View>}
         renderSectionHeader={() => null}
         stickySectionHeadersEnabled={false}
+        contentContainerStyle={{ paddingBottom: 16 }}
       />
     </SafeAreaView>
   );
