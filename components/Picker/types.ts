@@ -1,26 +1,25 @@
 import { TextInput } from "react-native";
 import { FieldVariants } from "../Field";
 
-export interface PickerFieldNames {
-  label: string;
-  value: string;
-}
-
-export interface PickerOption {
-  label: string;
-  value: string;
-  original?: any;
-}
-
 export type PickerMode = "normal" | "modal" | "fullModal";
-
 export type PickerValue = string | string[];
 
-export interface PickerProps {
+export type PickerFieldNames<T = Record<string, any>> = {
+  label: keyof T;
+  value: keyof T;
+}
+
+export interface PickerOption<T = Record<string, any>> {
+  label: string;
+  value: string;
+  original?: T;
+}
+
+export interface PickerProps<T = Record<string, any>> {
   label?: string;
   value?: PickerValue;
-  options: any[];
-  onChange?: (value: PickerValue, originalData?: any) => void;
+  options: T[];
+  onChange?: (value: PickerValue, originalData?: T) => void;
   placeholder?: string;
   error?: string;
   variant?: FieldVariants;
@@ -29,7 +28,7 @@ export interface PickerProps {
   right?: React.ReactNode;
   searchable?: boolean;
   mode?: PickerMode;
-  fieldNames?: PickerFieldNames;
+  fieldNames?: PickerFieldNames<T>;
   multiple?: boolean;
   maxSelected?: number;
   showSelectAll?: boolean;
@@ -37,10 +36,10 @@ export interface PickerProps {
   onMaxSelected?: () => void;
 }
 
-export interface PickerOptionsProps {
-  options: PickerOption[];
+export interface PickerOptionsProps<T = Record<string, any>> {
+  options: PickerOption<T>[];
   value?: PickerValue;
-  onSelect: (option: PickerOption) => void;
+  onSelect: (option: PickerOption<T>) => void;
   multiple?: boolean;
   maxSelected?: number;
 }

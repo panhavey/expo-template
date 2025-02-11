@@ -29,7 +29,7 @@ export default function CompoScreen() {
           content: (
             <>
               <TextInput label="Password" placeholder="Enter your password" variant="outline" />
-              <Picker label="Select Option" options={options} variant="outline" placeholder="Choose an option" mode="normal" searchable />
+              <Picker label="Select Option" options={options} variant="outline" placeholder="Choose an option" mode="normal" />
               <Picker
                 showClear
                 multiple

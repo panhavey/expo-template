@@ -1,4 +1,4 @@
-import React, { useRef, useState, useCallback } from "react";
+import React, { useRef, useState, useMemo } from "react";
 import { View, Text, StyleSheet, Modal, Pressable, TextInput } from "react-native";
 import { Field } from "../Field";
 import { borderRadius, colors, fontSize } from "@/constants";
@@ -11,11 +11,13 @@ import { SearchInput } from "./SearchInput";
 import { Tag } from "../Tag";
 import { Trash2 } from "lucide-react-native";
 import { Dimensions } from "react-native";
+import { mapOptionsWithFieldNames } from "./utils";
 
-export const Picker = ({
+export const Picker: React.FC<PickerProps> = ({
+  options,
+  fieldNames,
   label,
   value: externalValue,
-  options,
   onChange: externalOnChange,
   placeholder = "Select an option",
   error,
@@ -25,7 +27,6 @@ export const Picker = ({
   right,
   searchable,
   mode = "modal",
-  fieldNames = { label: "label", value: "value" },
   multiple,
   maxSelected,
   showSelectAll = false,
@@ -42,11 +43,7 @@ export const Picker = ({
 
   const isControlled = externalValue !== undefined;
   const value = isControlled ? externalValue : internalValue;
-  const mappedOptions = options.map((option) => ({
-    label: option[fieldNames.label],
-    value: option[fieldNames.value],
-    original: option,
-  }));
+  const mappedOptions = useMemo(() => mapOptionsWithFieldNames(options, fieldNames), [options, fieldNames]);
 
   const selectedOptions =
     multiple && Array.isArray(value)
