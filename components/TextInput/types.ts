@@ -7,6 +7,7 @@ export interface CustomTextInputProps extends TextInputProps {
   disabled?: boolean;
   right?: React.ReactNode;
   left?: React.ReactNode;
+  required?: boolean;
 }
 
 export type TextInputVariant = "default" | "outline";

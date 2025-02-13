@@ -13,11 +13,16 @@ interface FieldLabelProps {
 export const FieldLabel: React.FC<FieldLabelProps> = ({ label }) => {
   if (!label) return null;
 
-  const { variant, error, isFocused, value } = useField();
+  const { variant, error, isFocused, value, required } = useField();
 
-  const labelColor = isFocused ? colors.primary : error ? colors.error : colors.black_900;
+  const labelColor = isFocused ? colors.primary : error ? colors.error : colors.black_800;
 
-  const labelComponent = <Text style={[styles.label, { color: labelColor }]}>{label}</Text>;
+  const labelComponent = (
+    <Text style={[styles.label, { color: labelColor }]}>
+      {label}
+      {required && <Text style={[styles.label, { color: colors.error }]}> *</Text>}
+    </Text>
+  );
 
   if (variant === "outline") {
     return (

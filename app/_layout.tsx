@@ -11,6 +11,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { ToastProvider } from "@/components/Toast/v2";
 import { PortalProvider } from "@gorhom/portal";
+import { ToastContainer } from "@/components/Toast/v1";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -42,6 +43,7 @@ export default function RootLayout() {
             </Stack>
             <StatusBar style="auto" />
             <ToastProvider />
+            <ToastContainer />
           </ThemeProvider>
         </PortalProvider>
       </GestureHandlerRootView>

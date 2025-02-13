@@ -3,9 +3,9 @@ import { CustomTextInputProps, TextInputRef } from "./types";
 import { UnstyleTextInput } from "./UnstyleTextInput";
 import { Field } from "../Field";
 
-const TextInput = forwardRef<TextInputRef, CustomTextInputProps>(({ variant = "default", right, left, style, ...props }, ref) => {
+const TextInput = forwardRef<TextInputRef, CustomTextInputProps>(({ variant = "default", right, left, required, style, ...props }, ref) => {
   return (
-    <Field.Root variant={variant} error={props.error}>
+    <Field.Root variant={variant} error={props.error} required={required}>
       <Field.Label label={props.label} />
       <Field.Content left={left} right={right}>
         <UnstyleTextInput {...props} ref={ref} />

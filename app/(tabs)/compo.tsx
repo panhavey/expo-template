@@ -7,6 +7,7 @@ import { toast } from "@/components/Toast";
 import { Check, X } from "lucide-react-native";
 import { SafeAreaView, ScrollView } from "react-native";
 import { SectionList, View } from "react-native";
+import { toast as t1 } from "@/components/Toast/v1";
 
 export default function CompoScreen() {
   const sections = [
@@ -59,7 +60,17 @@ export default function CompoScreen() {
           type: "buttons",
           content: (
             <>
-              <Button onPress={() => toast.success("Success", { duration: 4000, mode: "stack" })}>Primary-Slide</Button>
+              <Button
+                onPress={() => {
+                  const id = t1.show("Submmiting", { duration: 0, mode: "stack" });
+
+                  setTimeout(() => {
+                    t1.update(id, "Success updated", { duration: 0, mode: "stack", type: "success" });
+                  }, 2000);
+                }}
+              >
+                Primary-Slide
+              </Button>
               <Button type="outline" onPress={() => toast.error("Fail", { animation: "bounce", mode: "stack" })}>
                 Outline-Bounce
               </Button>

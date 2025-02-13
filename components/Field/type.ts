@@ -4,6 +4,7 @@ export interface BaseFieldProps {
   variant?: FieldVariants;
   disabled?: boolean;
   error?: string;
+  required?: boolean;
 }
 
 export interface FieldContentProps {
