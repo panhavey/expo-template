@@ -7,7 +7,7 @@ export type PickerValue = string | string[];
 export type PickerFieldNames<T = Record<string, any>> = {
   label: keyof T;
   value: keyof T;
-}
+};
 
 export interface PickerOption<T = Record<string, any>> {
   label: string;
@@ -24,6 +24,7 @@ export interface PickerProps<T = Record<string, any>> {
   error?: string;
   variant?: FieldVariants;
   disabled?: boolean;
+  loading?: boolean;
   left?: React.ReactNode;
   right?: React.ReactNode;
   searchable?: boolean;

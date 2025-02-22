@@ -12,6 +12,7 @@ import { Tag } from "../Tag";
 import { Trash2 } from "lucide-react-native";
 import { Dimensions } from "react-native";
 import { mapOptionsWithFieldNames } from "./utils";
+import { ActivityIndicator } from "react-native";
 
 export const Picker: React.FC<PickerProps> = ({
   options,
@@ -31,6 +32,7 @@ export const Picker: React.FC<PickerProps> = ({
   maxSelected,
   showSelectAll = false,
   showClear = false,
+  loading,
   onMaxSelected,
 }: PickerProps) => {
   const [internalValue, setInternalValue] = useState<PickerValue | undefined>();
@@ -211,13 +213,20 @@ export const Picker: React.FC<PickerProps> = ({
     return OptionsContent;
   };
 
+  const renderRightIcon = () => {
+    if (loading) {
+      return <ActivityIndicator size="small" color={colors.gray_400} />;
+    }
+    return isOpen ? <ChevronUp color={colors.gray_400} /> : <ChevronDown color={colors.gray_400} />;
+  };
+
   return (
     <>
       <View onLayout={layout.onLayout} style={mode === "normal" ? { zIndex: 1000 } : undefined}>
         <Field.Root variant={variant} error={error}>
           <Field.Label label={label} />
-          <Pressable onPress={() => !disabled && setIsOpen(true)}>
-            <Field.Content left={left} right={right || (isOpen ? <ChevronUp color={colors.gray_400} /> : <ChevronDown color={colors.gray_400} />)}>
+          <Pressable onPress={() => !disabled && !loading && setIsOpen(true)}>
+            <Field.Content left={left} right={right || renderRightIcon()}>
               <View style={styles.textContainer}>{renderValue()}</View>
             </Field.Content>
           </Pressable>
