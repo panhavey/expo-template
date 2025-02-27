@@ -1,6 +1,5 @@
 import { Button } from "@/components/Button";
-import { dialogService } from "@/components/Dialog/DialogService";
-
+import { dialog, useDialog } from "@/components/Dialog";
 import { Picker } from "@/components/Picker";
 
 import { Switch } from "@/components/Switch";
@@ -59,7 +58,22 @@ export default function CompoScreen() {
                 Ghost-Update
               </Button>
 
-              <Button onPress={() => dialogService.show({ title: "Show", content: "hello how are you" })}>Dialog</Button>
+              <Button
+                onPress={
+                  () =>
+                    dialog.success("Operation completed", "Success", {
+                      animation: "slideUp",
+                    })
+                  // dialog.show({
+                  //   type: "success",
+                  //   title: "Success",
+                  //   content: "Operation completed",
+                  //   animation: "slideUp",
+                  // })
+                }
+              >
+                Dialog
+              </Button>
             </>
           ),
         },
@@ -75,6 +89,7 @@ export default function CompoScreen() {
         renderItem={({ item }) => <View style={{ padding: 16, gap: 16 }}>{item.content}</View>}
         renderSectionHeader={() => null}
         stickySectionHeadersEnabled={false}
+        contentContainerStyle={{ paddingBottom: 50 }}
       />
     </SafeAreaView>
   );

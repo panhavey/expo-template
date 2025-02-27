@@ -1,65 +1,73 @@
 import React, { createContext, useContext, useState, useCallback, useEffect } from "react";
 import { Dialog } from "./Dialog";
-import { dialogService } from "./DialogService";
+import { dialog } from "./DialogService";
+import { DialogOptions } from "./types";
+import { DefaultAnimationConfig } from "./constants/config";
 
-export type DialogOptions = {
-  title?: string;
-  content: React.ReactNode;
-  onConfirm?: () => void;
-  onCancel?: () => void;
-  confirmText?: string;
-  cancelText?: string;
-};
-
-type DialogContextType = {
+interface DialogContextValue {
   show: (options: DialogOptions) => void;
   hide: () => void;
-};
+}
 
-const DialogContext = createContext<DialogContextType | null>(null);
+const DialogContext = createContext<DialogContextValue | null>(null);
 
 export const DialogProvider: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
-  const [dialogState, setDialogState] = useState<{
-    visible: boolean;
-    options: DialogOptions | null;
-  }>({
-    visible: false,
-    options: null,
-  });
+  const [isVisible, setIsVisible] = useState(false);
+  const [dialogOptions, setDialogOptions] = useState<DialogOptions | null>(null);
 
-  const show = useCallback((options: DialogOptions) => {
-    setDialogState({ visible: true, options });
+  const show = useCallback((newOptions: DialogOptions) => {
+    const processedOptions: DialogOptions = {
+      ...newOptions,
+      animation: newOptions.animation || "fade",
+      animationConfig: {
+        ...DefaultAnimationConfig,
+        ...newOptions.animationConfig,
+      },
+    };
+
+    setDialogOptions(processedOptions);
+    setIsVisible(true);
   }, []);
 
   const hide = useCallback(() => {
-    setDialogState({ visible: false, options: null }); // Clear options when hiding
-  }, []);
+    setIsVisible(false);
+
+    const animationDuration = dialogOptions?.animationConfig?.duration || 300;
+    const clearTimeout = setTimeout(() => {
+      setDialogOptions(null);
+    }, animationDuration);
+
+    return () => window.clearTimeout(clearTimeout);
+  }, [dialogOptions?.animationConfig?.duration]);
 
   const handleClose = useCallback(() => {
-    dialogState.options?.onCancel?.();
+    dialogOptions?.onCancel?.();
     hide();
-  }, [dialogState.options, hide]);
+  }, [dialogOptions, hide]);
 
   useEffect(() => {
-    dialogService.setHandlers(show, hide);
-    return () => {
-      dialogService.setHandlers(null, null);
-    };
+    dialog.setHandlers(show, hide);
+    return () => dialog.setHandlers(null, null);
   }, [show, hide]);
 
+  const contextValue = React.useMemo<DialogContextValue>(() => ({ show, hide }), [show, hide]);
+
   return (
-    <DialogContext.Provider value={{ show, hide }}>
+    <DialogContext.Provider value={contextValue}>
       {children}
       <Dialog
-        visible={dialogState.visible}
+        visible={isVisible}
         onClose={handleClose}
-        title={dialogState.options?.title}
-        onConfirm={dialogState.options?.onConfirm}
-        onCancel={dialogState.options?.onCancel}
-        confirmText={dialogState.options?.confirmText}
-        cancelText={dialogState.options?.cancelText}
+        title={dialogOptions?.title}
+        onConfirm={dialogOptions?.onConfirm}
+        onCancel={dialogOptions?.onCancel}
+        confirmText={dialogOptions?.confirmText}
+        cancelText={dialogOptions?.cancelText}
+        type={dialogOptions?.type}
+        icon={dialogOptions?.icon}
+        animation={dialogOptions?.animation}
       >
-        {dialogState.options?.content}
+        {dialogOptions?.content}
       </Dialog>
     </DialogContext.Provider>
   );
