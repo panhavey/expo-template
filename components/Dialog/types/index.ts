@@ -50,6 +50,7 @@ export interface DialogOptions extends DialogStyles {
   maxWidth?: number;
   padding?: number;
   borderRadius?: number;
+  autoClose?: number;
 }
 
 export interface DialogProps extends Omit<DialogOptions, "content"> {

@@ -6,6 +6,7 @@ interface DialogShowOptions extends DialogStyles {
   animation?: DialogAnimation;
   animationConfig?: AnimationConfig;
   dismissible?: boolean;
+  autoClose?: number;
 }
 
 interface AlertOptions extends DialogShowOptions {

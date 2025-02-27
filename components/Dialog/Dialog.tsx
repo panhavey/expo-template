@@ -45,6 +45,7 @@ export const Dialog: React.FC<DialogProps> = ({
   maxWidth = 400,
   padding = 24,
   borderRadius = 16,
+  autoClose,
 }) => {
   const opacity = useSharedValue(visible ? 1 : 0);
   const scale = useSharedValue(visible ? 1 : 0.3);
@@ -59,6 +60,16 @@ export const Dialog: React.FC<DialogProps> = ({
   const timingConfig: WithTimingConfig = {
     duration: 200,
   };
+
+  React.useEffect(() => {
+    if (visible && autoClose && autoClose > 0) {
+      const timer = setTimeout(() => {
+        runOnJS(onClose)();
+      }, autoClose);
+
+      return () => clearTimeout(timer);
+    }
+  }, [visible, autoClose, onClose]);
 
   React.useEffect(() => {
     if (visible) {

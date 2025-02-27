@@ -61,7 +61,9 @@ export default function CompoScreen() {
               <Button
                 onPress={
                   () =>
-                    dialog.success("Operation completed", "Success", {
+                    dialog.error({
+                      title: "Confirm",
+                      message: "Are you sure you want to perform this action?",
                       animation: "slideUp",
                     })
                   // dialog.show({
