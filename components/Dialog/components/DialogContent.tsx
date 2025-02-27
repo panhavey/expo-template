@@ -1,14 +1,15 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
+import { DialogStyles } from "../types";
 
-interface DialogContentProps {
+interface DialogContentProps extends DialogStyles {
   children: React.ReactNode;
 }
 
-export const DialogContent: React.FC<DialogContentProps> = ({ children }) => {
+export const DialogContent: React.FC<DialogContentProps> = ({ children, contentStyle, contentTextStyle }) => {
   return (
-    <View style={styles.content}>
-      {typeof children === "string" ? <Text style={styles.contentText}>{children}</Text> : children}
+    <View style={[styles.content, contentStyle]}>
+      {typeof children === "string" ? <Text style={[styles.contentText, contentTextStyle]}>{children}</Text> : children}
     </View>
   );
 };

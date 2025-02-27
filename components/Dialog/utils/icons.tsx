@@ -14,9 +14,9 @@ export function getDialogIcon(type: DialogType): React.ReactNode {
       return <AlertTriangle {...config} />;
     case "info":
       return <Info {...config} />;
-    default:
     case "confirm":
       return <HelpCircle {...config} />;
+    default:
       return null;
   }
 }

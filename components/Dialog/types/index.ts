@@ -1,3 +1,5 @@
+import { StyleProp, TextStyle, ViewStyle } from "react-native";
+
 export type DialogType = "default" | "error" | "success" | "warning" | "info" | "confirm";
 
 export type DialogAnimation = "fade" | "scale" | "slideUp" | "none";
@@ -8,7 +10,30 @@ export interface AnimationConfig {
   delay?: number;
 }
 
-export interface DialogOptions {
+export interface DialogHeaderStyles {
+  titleStyle?: StyleProp<TextStyle>;
+  iconContainerStyle?: StyleProp<ViewStyle>;
+}
+
+export interface DialogContentStyles {
+  contentStyle?: StyleProp<ViewStyle>;
+  contentTextStyle?: StyleProp<TextStyle>;
+}
+
+export interface DialogActionsStyles {
+  buttonContainerStyle?: StyleProp<ViewStyle>;
+  confirmButtonStyle?: StyleProp<ViewStyle>;
+  cancelButtonStyle?: StyleProp<ViewStyle>;
+  confirmTextStyle?: StyleProp<TextStyle>;
+  cancelTextStyle?: StyleProp<TextStyle>;
+}
+
+export interface DialogStyles extends DialogActionsStyles, DialogHeaderStyles, DialogContentStyles {
+  overlayStyle?: StyleProp<ViewStyle>;
+  dialogStyle?: StyleProp<ViewStyle>;
+}
+
+export interface DialogOptions extends DialogStyles {
   title?: string;
   content: string | React.ReactNode;
   confirmText?: string;
@@ -20,6 +45,11 @@ export interface DialogOptions {
   animation?: DialogAnimation;
   animationConfig?: AnimationConfig;
   dismissible?: boolean;
+  overlayColor?: string;
+  width?: number | string;
+  maxWidth?: number;
+  padding?: number;
+  borderRadius?: number;
 }
 
 export interface DialogProps extends Omit<DialogOptions, "content"> {

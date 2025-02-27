@@ -1,8 +1,8 @@
 import { DefaultAnimationConfig } from "./constants/config";
-import { DialogOptions, DialogType, DialogAnimation, AnimationConfig } from "./types";
+import { DialogOptions, DialogType, DialogAnimation, AnimationConfig, DialogStyles } from "./types";
 import { getDialogIcon } from "./utils/icons";
 
-interface DialogShowOptions {
+interface DialogShowOptions extends DialogStyles {
   animation?: DialogAnimation;
   animationConfig?: AnimationConfig;
   dismissible?: boolean;
@@ -10,7 +10,6 @@ interface DialogShowOptions {
 
 interface AlertOptions extends DialogShowOptions {
   message: string | React.ReactNode;
-  onOk?: () => void;
   title?: string;
 }
 
@@ -49,16 +48,13 @@ class DialogService {
     }
   }
 
-  isInitialized() {
-    return this.initialized;
-  }
-
   show(options: DialogOptions) {
     if (!this.initialized) {
       this.messageQueue.push(options);
       return;
     }
     if (!this.showDialog) return;
+
     this.showDialog({
       ...options,
       animation: options.animation || "fade",
@@ -66,70 +62,68 @@ class DialogService {
     });
   }
 
-  hide() {
-    if (!this.initialized || !this.hideDialog) return;
-    this.hideDialog();
-  }
-
   private showDialogWithType(options: AlertOptions & { type: DialogType }) {
     this.show({
-      title: options.title,
       content: options.message,
       confirmText: "OK",
-      type: options.type,
-      icon: getDialogIcon(options.type),
-      animation: options.animation,
-      animationConfig: options.animationConfig,
-    });
-  }
-
-  alert(options: AlertOptions) {
-    this.show({
-      title: options.title,
-      content: options.message,
-      confirmText: "OK",
-      type: "default",
-      icon: getDialogIcon("default"),
-      animation: options.animation,
-      animationConfig: options.animationConfig,
+      ...options, // Pass through all style properties
     });
   }
 
   error(options: AlertOptions) {
-    this.showDialogWithType({ ...options, type: "error", title: options.title || "Error", onOk: options.onOk });
+    this.showDialogWithType({
+      ...options,
+      type: "error",
+      title: options.title || "Error",
+    });
   }
 
   success(options: AlertOptions) {
-    this.showDialogWithType({ ...options, type: "success", title: options.title || "Success", onOk: options.onOk });
+    this.showDialogWithType({
+      ...options,
+      type: "success",
+      title: options.title || "Success",
+    });
   }
 
   warning(options: AlertOptions) {
-    this.showDialogWithType({ ...options, type: "warning", title: options.title || "Warning", onOk: options.onOk });
+    this.showDialogWithType({
+      ...options,
+      type: "warning",
+      title: options.title || "Warning",
+    });
   }
 
   info(options: AlertOptions) {
-    this.showDialogWithType({ ...options, type: "info", title: options.title || "Info", onOk: options.onOk });
+    this.showDialogWithType({
+      ...options,
+      type: "info",
+      title: options.title || "Info",
+    });
   }
 
-  confirm(options: ConfirmOptions) {
+  confirm({ onOk, onCancel, ...options }: ConfirmOptions) {
     this.show({
-      title: options.title,
       content: options.message,
       onConfirm: () => {
-        options.onOk?.();
+        onOk?.();
         this.hide();
       },
       onCancel: () => {
-        options.onCancel?.();
+        onCancel?.();
         this.hide();
       },
-      confirmText: options.confirmText || "OK",
-      cancelText: options.cancelText || "Cancel",
-      type: options.type || "default",
+      confirmText: "OK",
+      cancelText: "Cancel",
+      type: "default",
       icon: getDialogIcon(options.type || "default"),
-      animation: options.animation,
-      animationConfig: options.animationConfig,
+      ...options, // Pass through all style properties
     });
+  }
+
+  hide() {
+    if (!this.initialized || !this.hideDialog) return;
+    this.hideDialog();
   }
 }
 

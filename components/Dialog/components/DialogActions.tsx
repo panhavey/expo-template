@@ -1,9 +1,9 @@
 import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import { DialogType } from "../types";
+import { DialogActionsStyles, DialogType } from "../types";
 import { DialogTypeConfig } from "../constants/config";
 
-interface DialogActionsProps {
+interface DialogActionsProps extends DialogActionsStyles {
   confirmText?: string;
   cancelText?: string;
   onConfirm?: () => void;
@@ -12,23 +12,35 @@ interface DialogActionsProps {
   type: DialogType;
 }
 
-export const DialogActions: React.FC<DialogActionsProps> = ({ confirmText, cancelText, onConfirm, onCancel, onClose, type }) => {
+export const DialogActions: React.FC<DialogActionsProps> = ({
+  confirmText,
+  cancelText,
+  onConfirm,
+  onCancel,
+  onClose,
+  type,
+  buttonContainerStyle,
+  confirmButtonStyle,
+  cancelButtonStyle,
+  confirmTextStyle,
+  cancelTextStyle,
+}) => {
   const config = DialogTypeConfig[type];
 
   return (
-    <View style={styles.buttonContainer}>
+    <View style={[styles.buttonContainer, buttonContainerStyle]}>
       {cancelText && (
-        <TouchableOpacity style={[styles.button, styles.cancelButton]} onPress={onCancel || onClose} activeOpacity={0.8}>
-          <Text style={styles.cancelText}>{cancelText}</Text>
+        <TouchableOpacity style={[styles.button, styles.cancelButton, cancelButtonStyle]} onPress={onCancel || onClose} activeOpacity={0.8}>
+          <Text style={[styles.cancelText, cancelTextStyle]}>{cancelText}</Text>
         </TouchableOpacity>
       )}
       {confirmText && (
         <TouchableOpacity
-          style={[styles.button, styles.confirmButton, { backgroundColor: config.color }]}
+          style={[styles.button, styles.confirmButton, { backgroundColor: config.color }, confirmButtonStyle]}
           onPress={onConfirm || onClose}
           activeOpacity={0.8}
         >
-          <Text style={styles.confirmText}>{confirmText}</Text>
+          <Text style={[styles.confirmText, confirmTextStyle]}>{confirmText}</Text>
         </TouchableOpacity>
       )}
     </View>

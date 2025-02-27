@@ -55,19 +55,7 @@ export const DialogProvider: React.FC<{ children?: React.ReactNode }> = ({ child
   return (
     <DialogContext.Provider value={contextValue}>
       {children}
-      <Dialog
-        visible={isVisible}
-        onClose={handleClose}
-        title={dialogOptions?.title}
-        onConfirm={dialogOptions?.onConfirm}
-        onCancel={dialogOptions?.onCancel}
-        confirmText={dialogOptions?.confirmText}
-        cancelText={dialogOptions?.cancelText}
-        type={dialogOptions?.type}
-        icon={dialogOptions?.icon}
-        animation={dialogOptions?.animation}
-        dismissible={dialogOptions?.dismissible}
-      >
+      <Dialog visible={isVisible} onClose={handleClose} {...dialogOptions}>
         {dialogOptions?.content}
       </Dialog>
     </DialogContext.Provider>
