@@ -1,4 +1,4 @@
-export type DialogType = "default" | "error" | "success" | "warning" | "info";
+export type DialogType = "default" | "error" | "success" | "warning" | "info" | "confirm";
 
 export type DialogAnimation = "fade" | "scale" | "slideUp" | "none";
 
@@ -19,6 +19,7 @@ export interface DialogOptions {
   icon?: React.ReactNode;
   animation?: DialogAnimation;
   animationConfig?: AnimationConfig;
+  dismissible?: boolean;
 }
 
 export interface DialogProps extends Omit<DialogOptions, "content"> {

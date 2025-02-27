@@ -66,6 +66,7 @@ export const DialogProvider: React.FC<{ children?: React.ReactNode }> = ({ child
         type={dialogOptions?.type}
         icon={dialogOptions?.icon}
         animation={dialogOptions?.animation}
+        dismissible={dialogOptions?.dismissible}
       >
         {dialogOptions?.content}
       </Dialog>

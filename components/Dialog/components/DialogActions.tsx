@@ -18,12 +18,16 @@ export const DialogActions: React.FC<DialogActionsProps> = ({ confirmText, cance
   return (
     <View style={styles.buttonContainer}>
       {cancelText && (
-        <TouchableOpacity style={[styles.button, styles.cancelButton]} onPress={onCancel || onClose}>
+        <TouchableOpacity style={[styles.button, styles.cancelButton]} onPress={onCancel || onClose} activeOpacity={0.8}>
           <Text style={styles.cancelText}>{cancelText}</Text>
         </TouchableOpacity>
       )}
       {confirmText && (
-        <TouchableOpacity style={[styles.button, styles.confirmButton, { backgroundColor: config.color }]} onPress={onConfirm || onClose}>
+        <TouchableOpacity
+          style={[styles.button, styles.confirmButton, { backgroundColor: config.color }]}
+          onPress={onConfirm || onClose}
+          activeOpacity={0.8}
+        >
           <Text style={styles.confirmText}>{confirmText}</Text>
         </TouchableOpacity>
       )}

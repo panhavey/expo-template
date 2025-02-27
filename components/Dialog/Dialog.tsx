@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, BackHandler } from "react-native";
+import { StyleSheet, BackHandler, Pressable } from "react-native";
 import { Portal } from "@gorhom/portal";
 import Animated, {
   useAnimatedStyle,
@@ -14,6 +14,7 @@ import { DialogContent } from "./components/DialogContent";
 import { DialogActions } from "./components/DialogActions";
 import { DialogHeader } from "./components/DialogHeader";
 import { DialogProps } from "./types";
+import { spacing } from "@/constants";
 
 export const Dialog: React.FC<DialogProps> = ({
   visible,
@@ -27,6 +28,7 @@ export const Dialog: React.FC<DialogProps> = ({
   type = "default",
   icon,
   animation = "fade",
+  dismissible = true,
 }) => {
   const opacity = useSharedValue(visible ? 1 : 0);
   const scale = useSharedValue(visible ? 1 : 0.3);
@@ -101,9 +103,12 @@ export const Dialog: React.FC<DialogProps> = ({
     }
   });
 
+  const handleBackdropPress = () => {};
+
   return (
     <Portal>
       <Animated.View style={[styles.overlay, overlayStyle]}>
+        <Pressable style={StyleSheet.absoluteFill} onPress={handleBackdropPress} />
         <Animated.View style={[styles.dialog, dialogStyle]}>
           <DialogHeader title={title} type={type} icon={icon} />
           <DialogContent>{children}</DialogContent>
@@ -125,7 +130,7 @@ const styles = StyleSheet.create({
   dialog: {
     backgroundColor: "white",
     borderRadius: 16,
-    padding: 24,
+    padding: spacing.lg,
     width: "85%",
     maxWidth: 400,
     alignItems: "center",

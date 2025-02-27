@@ -27,6 +27,10 @@ export const DialogTypeConfig: Record<
     size: 30,
     color: "#2563EB",
   },
+  confirm: {
+    size: 30,
+    color: "#666666",
+  },
 };
 
 export const DefaultAnimationConfig: AnimationConfig = {

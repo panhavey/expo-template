@@ -5,6 +5,21 @@ import { getDialogIcon } from "./utils/icons";
 interface DialogShowOptions {
   animation?: DialogAnimation;
   animationConfig?: AnimationConfig;
+  dismissible?: boolean;
+}
+
+interface AlertOptions extends DialogShowOptions {
+  message: string | React.ReactNode;
+  onOk?: () => void;
+  title?: string;
+}
+
+interface ConfirmOptions extends AlertOptions {
+  onOk?: () => void;
+  onCancel?: () => void;
+  type?: DialogType;
+  confirmText?: string;
+  cancelText?: string;
 }
 
 class DialogService {
@@ -56,58 +71,64 @@ class DialogService {
     this.hideDialog();
   }
 
-  private showDialogWithType(message: string | React.ReactNode, type: DialogType, title?: string, options?: DialogShowOptions) {
+  private showDialogWithType(options: AlertOptions & { type: DialogType }) {
     this.show({
-      title,
-      content: message,
+      title: options.title,
+      content: options.message,
       confirmText: "OK",
-      type,
-      icon: getDialogIcon(type),
-      animation: options?.animation,
-      animationConfig: options?.animationConfig,
+      type: options.type,
+      icon: getDialogIcon(options.type),
+      animation: options.animation,
+      animationConfig: options.animationConfig,
     });
   }
 
-  alert(message: string | React.ReactNode, title?: string, options?: DialogShowOptions) {
+  alert(options: AlertOptions) {
     this.show({
-      title,
-      content: message,
+      title: options.title,
+      content: options.message,
       confirmText: "OK",
       type: "default",
       icon: getDialogIcon("default"),
-      animation: options?.animation,
-      animationConfig: options?.animationConfig,
+      animation: options.animation,
+      animationConfig: options.animationConfig,
     });
   }
 
-  error(message: string | React.ReactNode, title: string = "Error", options?: DialogShowOptions) {
-    this.showDialogWithType(message, "error", title, options);
+  error(options: AlertOptions) {
+    this.showDialogWithType({ ...options, type: "error", title: options.title || "Error", onOk: options.onOk });
   }
 
-  success(message: string | React.ReactNode, title: string = "Success", options?: DialogShowOptions) {
-    this.showDialogWithType(message, "success", title, options);
+  success(options: AlertOptions) {
+    this.showDialogWithType({ ...options, type: "success", title: options.title || "Success", onOk: options.onOk });
   }
 
-  warning(message: string | React.ReactNode, title: string = "Warning", options?: DialogShowOptions) {
-    this.showDialogWithType(message, "warning", title, options);
+  warning(options: AlertOptions) {
+    this.showDialogWithType({ ...options, type: "warning", title: options.title || "Warning", onOk: options.onOk });
   }
 
-  info(message: string | React.ReactNode, title: string = "Info", options?: DialogShowOptions) {
-    this.showDialogWithType(message, "info", title, options);
+  info(options: AlertOptions) {
+    this.showDialogWithType({ ...options, type: "info", title: options.title || "Info", onOk: options.onOk });
   }
 
-  confirm(message: string | React.ReactNode, onConfirm: () => void, title?: string, type: DialogType = "default", options?: DialogShowOptions) {
+  confirm(options: ConfirmOptions) {
     this.show({
-      title,
-      content: message,
-      onConfirm,
-      onCancel: () => this.hide(),
-      confirmText: "OK",
-      cancelText: "Cancel",
-      type,
-      icon: getDialogIcon(type),
-      animation: options?.animation,
-      animationConfig: options?.animationConfig,
+      title: options.title,
+      content: options.message,
+      onConfirm: () => {
+        options.onOk?.();
+        this.hide();
+      },
+      onCancel: () => {
+        options.onCancel?.();
+        this.hide();
+      },
+      confirmText: options.confirmText || "OK",
+      cancelText: options.cancelText || "Cancel",
+      type: options.type || "default",
+      icon: getDialogIcon(options.type || "default"),
+      animation: options.animation,
+      animationConfig: options.animationConfig,
     });
   }
 }
